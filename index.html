@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PCR 11 – Fastabiqul Khairat</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── CSS Custom Properties ── */
+    :root {
+      --sand-light:   #f5e6c8;
+      --sand-mid:     #e8c98a;
+      --sand-dark:    #c8943a;
+      --dune:         #8b5e1a;
+      --desert-sky:   #1a0f00;
+      --sky-blue:     #2d1b69;
+      --sky-dawn:     #ff7b35;
+      --sky-amber:    #ffb347;
+      --oasis:        #2c6b4f;
+      --oasis-light:  #4caf50;
+      --text-light:   #fdf3dc;
+      --text-muted:   #c9a87c;
+      --accent-gold:  #f5c542;
+      --card-bg:      rgba(255, 230, 170, 0.08);
+      --card-border:  rgba(245, 197, 66, 0.25);
+
+      /* animation tokens */
+      --dur-fast: 0.3s;
+      --dur-med:  0.6s;
+      --dur-slow: 1s;
+      --ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    /* ── Page shell ── */
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--desert-sky);
+      color: var(--text-light);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ════════════════════════════════════════════
+       DESERT BACKGROUND
+    ════════════════════════════════════════════ */
+    .desert-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    /* Sky gradient */
+    .desert-bg__sky {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        in oklab to bottom,
+        #0a0520 0%,
+        #1a0f40 25%,
+        #2d1b69 45%,
+        #6b2d00 65%,
+        #c8550a 80%,
+        #ff8c2a 100%
+      );
+    }
+
+    /* Stars */
+    .desert-bg__stars {
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(1px 1px at 15%  8%, rgba(255,255,255,0.9) 0%, transparent 100%),
+        radial-gradient(1px 1px at 28% 12%, rgba(255,255,255,0.8) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 45%  5%, rgba(255,255,255,0.95) 0%, transparent 100%),
+        radial-gradient(1px 1px at 62% 10%, rgba(255,255,255,0.7) 0%, transparent 100%),
+        radial-gradient(1px 1px at 78%  3%, rgba(255,255,255,0.85) 0%, transparent 100%),
+        radial-gradient(1px 1px at 90%  9%, rgba(255,255,255,0.75) 0%, transparent 100%),
+        radial-gradient(1px 1px at  5% 20%, rgba(255,255,255,0.6)  0%, transparent 100%),
+        radial-gradient(1px 1px at 22% 18%, rgba(255,255,255,0.8)  0%, transparent 100%),
+        radial-gradient(1px 1px at 55% 22%, rgba(255,255,255,0.7)  0%, transparent 100%),
+        radial-gradient(1px 1px at 70% 16%, rgba(255,255,255,0.9)  0%, transparent 100%),
+        radial-gradient(1px 1px at 85% 20%, rgba(255,255,255,0.65) 0%, transparent 100%),
+        radial-gradient(1px 1px at 35% 28%, rgba(255,255,255,0.55) 0%, transparent 100%),
+        radial-gradient(1px 1px at 48% 32%, rgba(255,255,255,0.7)  0%, transparent 100%);
+      animation: starTwinkle 4s ease-in-out infinite alternate;
+    }
+
+    @keyframes starTwinkle {
+      from { opacity: 0.7; }
+      to   { opacity: 1; }
+    }
+
+    /* Moon */
+    .desert-bg__moon {
+      position: absolute;
+      top: 6%;
+      right: 12%;
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #fffbe0, #f5c542 40%, #d4a017);
+      box-shadow:
+        0 0 20px 6px rgba(245, 197, 66, 0.4),
+        0 0 60px 20px rgba(245, 197, 66, 0.15);
+      animation: moonGlow 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes moonGlow {
+      from { box-shadow: 0 0 20px 6px rgba(245,197,66,0.4), 0 0 60px 20px rgba(245,197,66,0.15); }
+      to   { box-shadow: 0 0 30px 10px rgba(245,197,66,0.6), 0 0 80px 30px rgba(245,197,66,0.25); }
+    }
+
+
+
+    /* Dune silhouettes – SVG based, fully responsive */
+    .desert-bg__dunes {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      line-height: 0;
+      pointer-events: none;
+    }
+    .desert-bg__dunes svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    /* Sand particles */
+    .desert-bg__particles {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(245, 197, 66, 0.6);
+      animation: floatParticle linear infinite;
+    }
+
+    @keyframes floatParticle {
+      0%   { transform: translateY(0)   translateX(0)   opacity: 0; }
+      10%  { opacity: 1; }
+      90%  { opacity: 0.6; }
+      100% { transform: translateY(-120px) translateX(30px) opacity: 0; }
+    }
+
+    /* ════════════════════════════════════════════
+       LAYOUT
+    ════════════════════════════════════════════ */
+    .page-wrapper {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+    }
+
+    /* ── "Router" pages ── */
+    .page {
+      display: none;
+      min-height: 100vh;
+    }
+    .page.active {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* ════════════════════════════════════════════
+       VIEW TRANSITION
+    ════════════════════════════════════════════ */
+    @keyframes slideInRight {
+      from { opacity: 0; transform: translateX(60px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes slideOutLeft {
+      from { opacity: 1; transform: translateX(0); }
+      to   { opacity: 0; transform: translateX(-60px); }
+    }
+    @keyframes slideInLeft {
+      from { opacity: 0; transform: translateX(-60px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes slideOutRight {
+      from { opacity: 1; transform: translateX(0); }
+      to   { opacity: 0; transform: translateX(60px); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .page.anim-enter-right { animation: slideInRight  var(--dur-med) var(--ease-out) forwards; }
+    .page.anim-exit-left   { animation: slideOutLeft  var(--dur-med) var(--ease-out) forwards; }
+    .page.anim-enter-left  { animation: slideInLeft   var(--dur-med) var(--ease-out) forwards; }
+    .page.anim-exit-right  { animation: slideOutRight var(--dur-med) var(--ease-out) forwards; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .page.anim-enter-right,
+      .page.anim-exit-left,
+      .page.anim-enter-left,
+      .page.anim-exit-right { animation: none; }
+    }
+
+    /* ════════════════════════════════════════════
+       HEADER / HERO
+    ════════════════════════════════════════════ */
+    .hero {
+      text-align: center;
+      padding: 3.5rem 1.5rem 2rem;
+      width: 100%;
+      max-width: 600px;
+    }
+
+    .hero__badge {
+      display: inline-block;
+      padding: 0.3rem 1.2rem;
+      background: linear-gradient(in oklab to right, rgba(139,94,26,0.5), rgba(200,148,58,0.4));
+      border: 1px solid var(--card-border);
+      border-radius: 50px;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--sand-mid);
+      margin-bottom: 1rem;
+      animation: fadeIn 0.8s var(--ease-out) 0.1s both;
+    }
+
+    .hero__logo {
+      font-family: 'Amiri', serif;
+      font-size: clamp(3rem, 12vw, 5.5rem);
+      font-weight: 700;
+      line-height: 1;
+      background: linear-gradient(in oklch to bottom right, #ffffff, var(--accent-gold), #c8943a);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: fadeIn 0.8s var(--ease-out) 0.2s both;
+      filter: drop-shadow(0 2px 16px rgba(245,197,66,0.3));
+    }
+
+    .hero__tagline {
+      margin-top: 0.75rem;
+      font-size: clamp(0.75rem, 2.5vw, 0.95rem);
+      color: var(--sand-mid);
+      line-height: 1.5;
+      font-style: italic;
+      animation: fadeIn 0.8s var(--ease-out) 0.35s both;
+    }
+
+    .hero__divider {
+      margin: 1.4rem auto 0;
+      width: 80px;
+      height: 2px;
+      background: linear-gradient(in oklab to right, transparent, var(--accent-gold), transparent);
+      animation: fadeIn 0.8s var(--ease-out) 0.45s both;
+    }
+
+    /* Arabic ornament text */
+    .bismillah {
+      font-family: 'Amiri', serif;
+      font-size: clamp(1.1rem, 4vw, 1.6rem);
+      color: var(--accent-gold);
+      text-align: center;
+      padding: 0 1.5rem 0.5rem;
+      animation: fadeIn 0.8s var(--ease-out) 0.55s both;
+    }
+
+    /* ════════════════════════════════════════════
+       LINK CARDS
+    ════════════════════════════════════════════ */
+    .links {
+      width: 100%;
+      max-width: 480px;
+      padding: 0 1.25rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .link-card {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.2rem;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      text-decoration: none;
+      color: var(--text-light);
+      cursor: pointer;
+      overflow: hidden;
+      transition:
+        transform var(--dur-fast) var(--ease-out),
+        border-color var(--dur-fast),
+        background var(--dur-fast);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      animation: fadeIn 0.7s var(--ease-out) both;
+    }
+
+    .link-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(in oklab 135deg, rgba(245,197,66,0.12), transparent 60%);
+      opacity: 0;
+      transition: opacity var(--dur-fast);
+    }
+
+    .link-card:hover,
+    .link-card:focus-visible {
+      transform: translateY(-3px) scale(1.01);
+      border-color: rgba(245,197,66,0.55);
+      background: rgba(255, 220, 140, 0.14);
+    }
+    .link-card:hover::before,
+    .link-card:focus-visible::before { opacity: 1; }
+
+    .link-card:active { transform: translateY(-1px) scale(0.99); }
+
+    .link-card__icon {
+      flex-shrink: 0;
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      font-size: 1.3rem;
+      background: linear-gradient(135deg, rgba(139,94,26,0.5), rgba(200,148,58,0.3));
+      border: 1px solid rgba(245,197,66,0.2);
+    }
+
+    .link-card__text { flex: 1; }
+    .link-card__title {
+      font-size: 0.92rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+    .link-card__sub {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 0.1rem;
+    }
+
+    .link-card__arrow {
+      font-size: 1rem;
+      color: var(--text-muted);
+      transition: transform var(--dur-fast) var(--ease-out), color var(--dur-fast);
+    }
+    .link-card:hover .link-card__arrow { transform: translateX(4px); color: var(--accent-gold); }
+
+    /* stagger animation delays */
+    .link-card:nth-child(1) { animation-delay: 0.55s; }
+    .link-card:nth-child(2) { animation-delay: 0.65s; }
+    .link-card:nth-child(3) { animation-delay: 0.75s; }
+    .link-card:nth-child(4) { animation-delay: 0.85s; }
+
+    /* ════════════════════════════════════════════
+       SECTION PAGES (Info & Contact)
+    ════════════════════════════════════════════ */
+    .section-page {
+      width: 100%;
+      max-width: 560px;
+      padding: 2rem 1.25rem 3rem;
+    }
+
+    .section-page__back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: rgba(255,230,170,0.08);
+      border: 1px solid var(--card-border);
+      border-radius: 50px;
+      font-size: 0.8rem;
+      color: var(--sand-mid);
+      cursor: pointer;
+      transition: background var(--dur-fast), color var(--dur-fast);
+      margin-bottom: 1.5rem;
+      text-decoration: none;
+    }
+    .section-page__back:hover { background: rgba(245,197,66,0.15); color: var(--accent-gold); }
+
+    .section-page__heading {
+      font-family: 'Amiri', serif;
+      font-size: clamp(1.6rem, 6vw, 2.4rem);
+      font-weight: 700;
+      background: linear-gradient(in oklch to right, var(--accent-gold), #fff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.3rem;
+    }
+
+    .section-page__divider {
+      width: 60px;
+      height: 2px;
+      background: linear-gradient(in oklab to right, var(--accent-gold), transparent);
+      margin-bottom: 1.4rem;
+    }
+
+    .info-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 1.4rem;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      font-size: 0.88rem;
+      line-height: 1.75;
+      color: rgba(255,243,220,0.9);
+    }
+
+    .info-card + .info-card { margin-top: 0.9rem; }
+
+    .info-card__label {
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent-gold);
+      margin-bottom: 0.55rem;
+      font-weight: 600;
+    }
+
+    /* Scroll reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity var(--dur-med) var(--ease-out), transform var(--dur-med) var(--ease-out);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ════════════════════════════════════════════
+       CONTACT
+    ════════════════════════════════════════════ */
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.9rem 1.1rem;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      text-decoration: none;
+      color: var(--text-light);
+      margin-bottom: 0.7rem;
+      transition: background var(--dur-fast), border-color var(--dur-fast), transform var(--dur-fast);
+      backdrop-filter: blur(8px);
+    }
+    .contact-item:hover { background: rgba(255,220,140,0.12); border-color: rgba(245,197,66,0.5); transform: translateX(4px); }
+
+    .contact-item__icon { font-size: 1.4rem; }
+    .contact-item__info {}
+    .contact-item__type { font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); }
+    .contact-item__value { font-size: 0.88rem; font-weight: 500; }
+
+    /* ════════════════════════════════════════════
+       FOOTER / CREDIT
+    ════════════════════════════════════════════ */
+    .footer {
+      margin-top: auto;
+      padding: 1.2rem;
+      text-align: center;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      opacity: 0.75;
+    }
+    .footer a { color: var(--accent-gold); text-decoration: none; }
+
+    /* ════════════════════════════════════════════
+       SAND WAVE at page bottom
+    ════════════════════════════════════════════ */
+    .sand-wave {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 30%;
+      pointer-events: none;
+      z-index: 0;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Desert Background ── -->
+<div class="desert-bg" aria-hidden="true">
+  <div class="desert-bg__sky"></div>
+  <div class="desert-bg__stars"></div>
+  <div class="desert-bg__moon"></div>
+
+
+
+  <!-- Dunes – SVG, fully responsive -->
+  <div class="desert-bg__dunes" aria-hidden="true">
+    <svg viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="dune-grad-back" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%"   stop-color="#3a1f00"/>
+          <stop offset="50%"  stop-color="#6b4010"/>
+          <stop offset="100%" stop-color="#4a2800"/>
+        </linearGradient>
+        <linearGradient id="dune-grad-mid" x1="0" y1="1" x2="0" y2="0">
+          <stop offset="0%"   stop-color="#4a2800"/>
+          <stop offset="60%"  stop-color="#8b5e1a"/>
+          <stop offset="100%" stop-color="#c8943a"/>
+        </linearGradient>
+        <linearGradient id="dune-grad-front" x1="0" y1="1" x2="0" y2="0">
+          <stop offset="0%"   stop-color="#3a1f00"/>
+          <stop offset="55%"  stop-color="#7a4e18"/>
+          <stop offset="100%" stop-color="#b07828"/>
+        </linearGradient>
+      </defs>
+      <!-- Back dune -->
+      <path d="M0 320 L0 200 C120 155 280 130 440 140 C600 150 700 175 880 160 C1060 145 1200 115 1440 130 L1440 320 Z"
+            fill="url(#dune-grad-back)" opacity="0.85"/>
+      <!-- Mid dune -->
+      <path d="M0 320 L0 230 C80 195 200 165 380 155 C520 148 640 170 780 185 C920 200 1100 195 1440 220 L1440 320 Z"
+            fill="url(#dune-grad-mid)"/>
+      <!-- Front dune -->
+      <path d="M0 320 L0 295 C150 285 320 275 500 270 C680 265 850 255 1020 235 C1180 218 1320 200 1440 195 L1440 320 Z"
+            fill="url(#dune-grad-front)"/>
+    </svg>
+  </div>
+
+  <!-- Floating particles -->
+  <div class="desert-bg__particles" id="particles"></div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PAGE WRAPPER
+══════════════════════════════════════════ -->
+<div class="page-wrapper">
+
+  <!-- ── HOME PAGE ── -->
+  <main class="page active" id="page-home" role="main">
+    <header class="hero">
+      <p class="hero__badge">Rohis &amp; Bamas Nurul Hikmah • 2026</p>
+      <h1 class="hero__logo">PCR <span>11</span></h1>
+      <p class="hero__tagline">
+        Redefining FOMO: Dari <em>Fear of Missing Out</em><br>
+        menjadi <strong>Fastabiqul Khairat</strong>
+      </p>
+      <div class="hero__divider"></div>
+    </header>
+
+    <p class="bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
+
+    <nav class="links" aria-label="Menu PCR 11">
+      <button class="link-card" data-target="page-info" aria-label="Lihat informasi PCR 11">
+        <div class="link-card__icon" aria-hidden="true">🕌</div>
+        <div class="link-card__text">
+          <div class="link-card__title">Informasi PCR 11</div>
+          <div class="link-card__sub">Tentang kegiatan, tujuan &amp; latar belakang</div>
+        </div>
+        <span class="link-card__arrow" aria-hidden="true">›</span>
+      </button>
+
+      <a class="link-card" href="https://maps.app.goo.gl/XKALUQtVGYtk9BaWA" target="_blank" rel="noopener" aria-label="Lokasi Acara PCR 11 (buka di Google Maps)">
+        <div class="link-card__icon" aria-hidden="true">📍</div>
+        <div class="link-card__text">
+          <div class="link-card__title">Lokasi Acara</div>
+          <div class="link-card__sub">Buka di Google Maps</div>
+        </div>
+        <span class="link-card__arrow" aria-hidden="true">↗</span>
+      </a>
+
+      <button class="link-card" data-target="page-contact" aria-label="Lihat informasi kontak">
+        <div class="link-card__icon" aria-hidden="true">📞</div>
+        <div class="link-card__text">
+          <div class="link-card__title">Contact Person</div>
+          <div class="link-card__sub">WhatsApp, Gmail &amp; Lokasi Sekolah</div>
+        </div>
+        <span class="link-card__arrow" aria-hidden="true">›</span>
+      </button>
+    </nav>
+
+    <footer class="footer">Made with ❤️ by <strong>Bamas &amp; Rohis Nurul Hikmah</strong><br>SMK Negeri 2 Balikpapan · 2026</footer>
+  </main>
+
+  <!-- ── INFO PAGE ── -->
+  <section class="page" id="page-info" aria-label="Informasi PCR 11" role="region">
+    <div class="section-page">
+      <button class="section-page__back" data-target="page-home" data-dir="back" aria-label="Kembali ke halaman utama">
+        ‹ Kembali
+      </button>
+
+      <h2 class="section-page__heading">Tentang PCR 11</h2>
+      <div class="section-page__divider"></div>
+
+      <div class="info-card reveal">
+        <p>Pekan Cinta Rasul (PCR) merupakan kegiatan dakwah di bawah naungan Rohis & Bamas Nurul Hikmah SMK Negeri 2 Balikpapan yang telah rutin dilaksanakan selama kurang lebih sepuluh tahun dan pada tahun 2026 memasuki pelaksanaan ke-11. Kegiatan ini menjadi wadah untuk menumbuhkan kecintaan kepada Allah SWT. dan Rasulullah SAW., meningkatkan pemahaman keislaman, serta mendorong penerapan nilai-nilai Islam dalam kehidupan sehari-hari.</p>
+        <p style="margin-top:1rem">Pelaksanaan PCR ke-11 tahun 2026 berlandaskan nilai-nilai Islam yang bersumber dari Al-Qur'an dan Hadis serta merupakan bagian dari program kerja Rohis & Bamas Nurul Hikmah. Kegiatan ini disusun sebagai upaya pembinaan spiritual dan karakter siswa, yang diperkuat melalui musyawarah pengurus bersama pembina untuk menciptakan lingkungan sekolah yang religius, kondusif, dan berakhlak mulia.</p>
+        <p style="margin-top:1rem">PCR ke-11 bertujuan meningkatkan keimanan dan ketakwaan, menumbuhkan kecintaan kepada Rasulullah SAW. sebagai teladan, serta mengarahkan siswa mengubah FOMO (Fear Of Missing Out) menjadi Fastabiqul Khairat (berlomba-lomba dalam kebaikan). Selain itu, kegiatan ini menjadi sarana mengembangkan potensi keagamaan, membangun kompetisi yang sehat, mempererat ukhuwah Islamiyah, dan menciptakan lingkungan sekolah yang religius, inspiratif, serta semangat dalam melakukan kebaikan.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CONTACT PAGE ── -->
+  <section class="page" id="page-contact" aria-label="Kontak" role="region">
+    <div class="section-page">
+      <button class="section-page__back" data-target="page-home" data-dir="back" aria-label="Kembali ke halaman utama">
+        ‹ Kembali
+      </button>
+
+      <h2 class="section-page__heading">Contact Person</h2>
+      <div class="section-page__divider"></div>
+
+      <div class="reveal">
+        <a class="contact-item" href="https://wa.me/6282254714371" target="_blank" rel="noopener" aria-label="Hubungi via WhatsApp +62 822-5471-4371">
+          <span class="contact-item__icon">💬</span>
+          <div class="contact-item__info">
+            <p class="contact-item__type">WhatsApp</p>
+            <p class="contact-item__value">+62 822-5471-4371</p>
+          </div>
+        </a>
+
+        <a class="contact-item" href="mailto:rohisnurulhikmahskada@gmail.com" aria-label="Kirim email ke rohisnurulhikmahskada@gmail.com">
+          <span class="contact-item__icon">✉️</span>
+          <div class="contact-item__info">
+            <p class="contact-item__type">Gmail</p>
+            <p class="contact-item__value">rohisnurulhikmahskada@gmail.com</p>
+          </div>
+        </a>
+
+        <a class="contact-item" href="https://maps.app.goo.gl/KwpsU7ZpUkbcLScn6" target="_blank" rel="noopener" aria-label="Lihat lokasi sekolah di Google Maps">
+          <span class="contact-item__icon">🏫</span>
+          <div class="contact-item__info">
+            <p class="contact-item__type">Alamat Sekolah</p>
+            <p class="contact-item__value">SMK Negeri 2 Balikpapan</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /page-wrapper -->
+
+<script>
+/* ═══════════════════════════════════════════════
+   PARTICLES
+═══════════════════════════════════════════════ */
+(function createParticles() {
+  const container = document.getElementById('particles');
+  for (let i = 0; i < 18; i++) {
+    const p = document.createElement('span');
+    p.classList.add('particle');
+    const size = Math.random() * 3 + 1;
+    p.style.cssText = `
+      width: ${size}px;
+      height: ${size}px;
+      left: ${Math.random() * 100}%;
+      bottom: ${Math.random() * 35}%;
+      opacity: ${Math.random() * 0.6 + 0.2};
+      animation-duration: ${Math.random() * 6 + 4}s;
+      animation-delay: ${Math.random() * 5}s;
+    `;
+    container.appendChild(p);
+  }
+})();
+
+/* ═══════════════════════════════════════════════
+   PAGE TRANSITIONS
+═══════════════════════════════════════════════ */
+const pages = document.querySelectorAll('.page');
+let currentPage = document.getElementById('page-home');
+let isAnimating = false;
+
+function navigateTo(targetId, isBack = false) {
+  if (isAnimating) return;
+  const target = document.getElementById(targetId);
+  if (!target || target === currentPage) return;
+
+  isAnimating = true;
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (reducedMotion) {
+    currentPage.classList.remove('active');
+    target.classList.add('active');
+    currentPage = target;
+    isAnimating = false;
+    triggerReveal(target);
+    return;
+  }
+
+  const exitAnim  = isBack ? 'anim-exit-right' : 'anim-exit-left';
+  const enterAnim = isBack ? 'anim-enter-left' : 'anim-enter-right';
+
+  // Exit current
+  currentPage.classList.add(exitAnim);
+
+  const DURATION = 550; // ms
+
+  setTimeout(() => {
+    currentPage.classList.remove('active', exitAnim);
+
+    // Enter new
+    target.classList.add('active', enterAnim);
+    // Force reflow
+    void target.offsetHeight;
+
+    setTimeout(() => {
+      target.classList.remove(enterAnim);
+      currentPage = target;
+      isAnimating = false;
+      triggerReveal(target);
+    }, DURATION);
+  }, DURATION);
+}
+
+/* ── Reveal on scroll (IntersectionObserver) ── */
+function triggerReveal(container) {
+  const elements = container.querySelectorAll('.reveal');
+  if (!elements.length) return;
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  elements.forEach(el => {
+    el.classList.remove('visible');
+    observer.observe(el);
+  });
+}
+
+/* Trigger for initial page */
+triggerReveal(currentPage);
+
+/* ── Event delegation for navigation ── */
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-target]');
+  if (!btn) return;
+  e.preventDefault();
+  const isBack = btn.dataset.dir === 'back';
+  navigateTo(btn.dataset.target, isBack);
+});
+</script>
+</body>
+</html>
